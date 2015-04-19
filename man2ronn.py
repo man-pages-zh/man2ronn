@@ -12,6 +12,13 @@ import re
 
 from argparse import ArgumentParser
 
+def boldrepl(obj):
+    text = obj.group(1)
+    if text.startswith("-"):
+        return "`" + text + "`"
+    else:
+        return "**" + text + "**"
+
 def main(argv=None): 
     if argv is None:
         argv = sys.argv
@@ -32,12 +39,8 @@ def main(argv=None):
                 line = line.replace('\-', '-').replace('\n\r', '\n')
                 line = line.replace('\.', '.').replace('\\e','\\')
                 line = line.replace('<', '&lt;')
-                line = re.sub('\\\\fB(.*?)\\\\fR',
-                              lambda obj: "`"+obj.group(1)+"`",
-                              line)
-                line = re.sub('\\\\fB(.*?)\\\\fP',
-                              lambda obj: "`"+obj.group(1)+"`",
-                              line)
+                line = re.sub('\\\\fB(.*?)\\\\fR', boldrepl, line)
+                line = re.sub('\\\\fB(.*?)\\\\fP', boldrepl, line)
                 line = re.sub('\\\\fI(.*?)\\\\fR',
                               lambda obj: "<"+obj.group(1)+">",
                               line)
@@ -57,10 +60,13 @@ def main(argv=None):
                     line = line.replace('.TH ', '')
                     line = line + '='*(len(line)-1) + '\n'
                 elif line.startswith('.SH '):
-                    line = "\n## " + line.replace('.SH "', '').replace('"\n', '\n')
+                    line = "\n## " + line.replace('.SH ', '').replace('"', '')
                 elif line.startswith('.B '):
-                    line = line.replace('.B ', '**'
-                                    ).replace('\n', '').rstrip() + '**\n'
+                    line = line.replace('.B ', '')
+                    if line.startswith("-"):
+                        line = "`" + line.rstrip("\n") + "`\n"
+                    else:
+                        line = "**" + line.rstrip("\n") + "**\n"
                 elif line.startswith('.I '):
                     line = line.replace('.I ', '*'
                                     ).replace('\n', '').rstrip() + '*\n'
