@@ -79,7 +79,10 @@ def main(argv=None):
                 else:
                     pass
                     
-                if len(text) > 0: 
+                if len(text) > 0:
+                    if text[-1].startswith("\n## NAME"):
+                        text.pop()
+                        line = line + '='*(len(line)-1) + '\n'
                     if text[-1] == ".TP\n":
                         text.pop()
                         line = "* " + line
