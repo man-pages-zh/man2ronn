@@ -39,6 +39,7 @@ def main(argv=None):
                 line = line.replace('\-', '-').replace('\n\r', '\n')
                 line = line.replace('\.', '.').replace('\\e','\\')
                 line = line.replace('<', '&lt;')
+                line = line.replace('\(aq', "'").replace('\(co', '©')
                 line = re.sub('\\\\fB(.*?)\\\\fR', boldrepl, line)
                 line = re.sub('\\\\fB(.*?)\\\\fP', boldrepl, line)
                 line = re.sub('\\\\fI(.*?)\\\\fR',
